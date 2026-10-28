@@ -4,7 +4,7 @@ An open-weights creative studio on ComfyUI. Four apps, one cast of characters, n
 
 | App | What it does | Runs on |
 |---|---|---|
-| **Openjutsu** | Star in any video. Add a clip and photos (or your characters); motion, camera, background and sound stay. Optional style and motion transfer. | Comfy Cloud |
+| **Openjutsu** | Star in any video. Add a clip and photos (or your characters); motion, camera, background and sound stay. | Comfy Cloud |
 | **Tsukuyomi** | An infinite dream. Write the start, or continue a video you upload; a director model writes each next beat and the film keeps going, part after part. | Comfy Cloud (director) + a Comfy deployment (renderer) |
 | **Cinematic** | Direct a single frame: shot, camera, light and look. | Comfy Cloud |
 | **Influencer** | Invent a character from traits or 1–3 photos, then make photos and videos of them. Same face in every post. | Comfy Cloud (sheets, photos) + the Comfy deployment (videos) |
@@ -15,11 +15,10 @@ Susano's Openjutsu is not Comfy Org's [comfy-openjutsu](https://github.com/Comfy
 
 ## Models (all open weights)
 
-- **MiniMax H3** for every video: Character Swap v1.1 and Style Transfer LoRAs by Alissonerdx, the 8-step DMD turbo LoRA by drbaph, and SEEDHUNTER v2.51 by foxydits on the Singularity ref2va checkpoint with Kijai's DMAD 4-step LoRA.
+- **MiniMax H3** for every video: Character Swap v1.1 LoRA by Alissonerdx, the 8-step DMD turbo LoRA by drbaph, and SEEDHUNTER v2.51 by foxydits on the Singularity ref2va checkpoint with Kijai's DMAD 4-step LoRA.
 - **RefMods** (ComfyUI-MiniMaxH3Mod by Luisacaotica) for character identity in video.
 - **Qwen3.5-9B** (TextGenerate) writes prompts and directs Tsukuyomi; **BiRefNet** cuts out reference photos.
 - **FLUX.2 [dev]** draws Influencer sheets and photos and Cinematic frames. Cinematic uses Comfy Org's Cinematic Studio prompt unchanged, with FLUX.2 [dev] in place of FLUX.2 [pro].
-- **Wan 2.1 SCAIL-2** and **Qwen-Image-Edit 2511** for Openjutsu motion transfer.
 
 Check each model's licence before commercial use. FLUX.2 [dev] in particular is released under a non-commercial licence.
 
@@ -51,7 +50,7 @@ ffmpeg and ffprobe come from npm (`ffmpeg-static`, `ffprobe-static`); nothing el
 
 ### Comfy Cloud models
 
-Openjutsu loads three community LoRAs by name. Import them into your Comfy Cloud models from Hugging Face (`Alissonerdx/Minimax-H3-ComfyUI`: character swap v1.1 and style transfer v1.0; `drbaph/MiniMax-H3-Turbo-Lora-ComfyUI`: 8-step turbo). If your imported names differ, set `SUSANO_SWAP_LORA`, `SUSANO_STYLE_LORA` and `SUSANO_TURBO_LORA`. Everything else is in Comfy Cloud's model library.
+Openjutsu loads two community LoRAs by name. Import them into your Comfy Cloud models from Hugging Face (`Alissonerdx/Minimax-H3-ComfyUI`: character swap v1.1; `drbaph/MiniMax-H3-Turbo-Lora-ComfyUI`: 8-step turbo). If your imported names differ, set `SUSANO_SWAP_LORA` and `SUSANO_TURBO_LORA`. Everything else is in Comfy Cloud's model library.
 
 ### The Tsukuyomi deployment
 
@@ -82,7 +81,7 @@ A cold deployment adds a few minutes of wake-up time, which is billed.
 
 ## Credits
 
-- [Character Swap and Style Transfer LoRAs](https://huggingface.co/Alissonerdx/Minimax-H3-ComfyUI) by Alissonerdx
+- [Character Swap LoRA](https://huggingface.co/Alissonerdx/Minimax-H3-ComfyUI) by Alissonerdx
 - [SEEDHUNTER v2.5.1](https://civitai.com/models/2881362) by foxydits, included in `workflows/seedhunter/` and run unchanged apart from RefMods (see `THIRD_PARTY_NOTICES/SEEDHUNTER-NOTICE.md`)
 - [ComfyUI-MiniMaxH3Mod](https://github.com/Luisacaotica/ComfyUI-MiniMaxH3Mod) (RefMods) by Luisacaotica
 - [Cinematic Studio](https://github.com/Comfy-Org/comfy-cinematic-studio) by Comfy Org (MIT)

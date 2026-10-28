@@ -3,7 +3,7 @@ import { Recent } from "@/components/Recent";
 
 /** Each card shows a frame Susano made with that app. */
 const APPS: { href?: string; name: string; desc: string; image: string; alt: string; tag: string }[] = [
-  { href: "/openjutsu", name: "Openjutsu", desc: "Star in any video. Add a clip and a photo, keep everything else.", image: "/apps/openjutsu.jpg", alt: "Two people recast into a studio music video", tag: "Video" },
+  { href: "/openjutsu", name: "Openjutsu", desc: "Star in any video. Add a clip and a photo, keep everything else.", image: "/apps/openjutsu.jpg", alt: "Two friends in a park recast as two invented characters", tag: "Video" },
   { href: "/tsukuyomi", name: "Tsukuyomi", desc: "An infinite dream. Write the start, it never ends.", image: "/apps/tsukuyomi.jpg", alt: "An anime duel at a temple gate at sunset", tag: "New" },
   { href: "/cinematic", name: "Cinematic", desc: "Direct a single frame: shot, camera, light and look.", image: "/apps/cinematic.jpg", alt: "A samurai in a rainy neon alley", tag: "Image" },
   { href: "/influencer", name: "Influencer", desc: "Your own AI influencer, from traits or a photo. Same face in every post.", image: "/apps/influencer.jpg", alt: "An invented influencer laughing at a café in Lisbon", tag: "New" },

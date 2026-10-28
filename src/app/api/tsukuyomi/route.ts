@@ -6,6 +6,7 @@ import { castable, characterPanels } from "@/lib/character";
 import { uploadInput } from "@/lib/comfy";
 import { dreams, startDream } from "@/lib/dream";
 import { extractLastFrame, normaliseImage, normaliseVideo, probeImage, probeVideo } from "@/lib/media";
+import { screen, Unsafe } from "@/lib/safety";
 import { mediaDir } from "@/lib/store";
 import { CLIP, LENGTHS, type Length } from "@/lib/tsukuyomi";
 
@@ -37,6 +38,8 @@ export async function POST(req: Request) {
   const story = String(form.get("story") ?? "").replace(/\s+/g, " ").trim().slice(0, 600);
   if (story.length < 10) return bad(video ? "Write what happens next, in a sentence or two." : "Write how it starts, in a sentence or two.");
   const length = LENGTHS.find((l) => l.key === form.get("length")) ?? LENGTHS[0];
+  // A public instance can cap how long a dream runs (SUSANO_MAX_DREAM_PARTS); it then ends early, like waking up.
+  const wanted = Math.min(length.segments, Number(process.env.SUSANO_MAX_DREAM_PARTS) || length.segments);
 
   let cast: { id: string; name: string } | undefined;
   if (castId) {
@@ -86,13 +89,16 @@ export async function POST(req: Request) {
       await fs.rm(raw);
     }
 
+    // A cast character was checked when it was made; the user's own picture, video and story go through Safe mode.
+    await screen({ text: [story], pictures: picture ? [photo] : [], videos: video ? [path.join(dir, "film.mp4")] : [] });
+
     const dream = await startDream({
       id,
       createdAt: Date.now(),
       status: "queued",
       story,
       length: length.key as Length,
-      wanted: length.segments,
+      wanted,
       photoName: await uploadInput(await fs.readFile(photo), `${id}_photo.png`, "image/png"),
       photoSize: await probeImage(photo),
       clipSeconds,
@@ -105,6 +111,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ id });
   } catch (e) {
     await fs.rm(dir, { recursive: true, force: true });
+    if (e instanceof Unsafe) return bad(e.message, 422);
     return bad(`Could not start: ${e instanceof Error ? e.message : String(e)}`, 502);
   }
 }

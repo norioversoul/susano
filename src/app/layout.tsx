@@ -3,6 +3,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import Link from "next/link";
 import { Backdrop } from "@/components/Backdrop";
 import { Nav } from "@/components/Nav";
+import { SafeModeToggle } from "@/components/SafeModeToggle";
 import { THEME_BOOT, ThemeToggle } from "@/components/ThemeToggle";
 import "./globals.css";
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
             <Link href="/" className="brand">Susano</Link>
             <Nav />
             <div className="topbar-end">
+              <SafeModeToggle />
               <ThemeToggle />
               <span className="account" aria-hidden="true">R</span>
             </div>

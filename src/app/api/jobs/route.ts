@@ -10,6 +10,7 @@ import {
   type Crop, type Mode, type Quality,
 } from "@/lib/openjutsu";
 import { startJob } from "@/lib/pipeline";
+import { screen, Unsafe } from "@/lib/safety";
 import { jobs, mediaDir, type Job, type JobRequest } from "@/lib/store";
 
 export const runtime = "nodejs";
@@ -86,6 +87,11 @@ export async function POST(req: Request) {
       photoPaths.push(p);
     }
 
+    // Characters were checked when they were made; the user's own uploads and words go through Safe mode.
+    if (!dryRun) {
+      await screen({ text: prompt ? [prompt] : [], pictures: photoPaths.filter((_, i) => !("cast" in slots[i])), videos: [sourcePath] });
+    }
+
     const upload = async (file: string, type: string) =>
       dryRun ? path.basename(file) : uploadInput(await fs.readFile(file), `${id}_${path.basename(file)}`, type);
     const request: JobRequest = {
@@ -123,6 +129,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ id });
   } catch (e) {
     await fs.rm(dir, { recursive: true, force: true });
+    if (e instanceof Unsafe) return bad(e.message, 422);
     const msg = e instanceof Error ? e.message : String(e);
     return bad(`Could not start: ${msg}`, 502);
   }

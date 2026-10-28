@@ -65,6 +65,7 @@ BEAT: one paragraph, present tense, 50 to 80 words. What <Subject 1> (and anyone
 moves and what changes around them. It continues directly from the last frame: same place, same lighting, same clothing,
 no cut, no time jump, one continuous camera. Move the story forward a little; do not repeat earlier beats.
 SOUND: the sounds of this beat, under 15 words.
+Keep every shot safe for work: no nudity, sexual content or gore.
 Write in English only. Output only these two lines.`;
 
 /** SEEDHUNTER's H3 Prompt IDE text. */

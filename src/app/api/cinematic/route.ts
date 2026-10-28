@@ -1,6 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { cinematicPrompt, isDirection } from "@/lib/cinematic";
+import { screen, Unsafe } from "@/lib/safety";
 import { startStill, stills } from "@/lib/still";
 
 export const runtime = "nodejs";
@@ -26,6 +27,7 @@ export async function POST(request: Request) {
   const prompt = cinematicPrompt(body.scene, body.direction);
   const seed = Math.floor(Math.random() * 2 ** 31);
   try {
+    await screen({ text: [body.scene] });
     const id = randomUUID();
     await stills.add({
       id, createdAt: Date.now(), status: "queued", scene: body.scene.trim(), direction: body.direction, prompt, seed,
@@ -33,6 +35,7 @@ export async function POST(request: Request) {
     });
     return NextResponse.json({ id });
   } catch (e) {
+    if (e instanceof Unsafe) return NextResponse.json({ error: e.message }, { status: 422 });
     return NextResponse.json({ error: `Could not start: ${e instanceof Error ? e.message : String(e)}` }, { status: 502 });
   }
 }

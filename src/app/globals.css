@@ -115,6 +115,9 @@ button { cursor: pointer; }
 .nav a[aria-current="page"] { background: var(--tab-on); color: var(--text); font-weight: 600; box-shadow: var(--tab-shadow); }
 .topbar-end { margin-left: auto; display: flex; align-items: center; gap: 8px; }
 .icon-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: var(--chip); color: var(--text); display: inline-flex; align-items: center; justify-content: center; padding: 0; }
+.safe-toggle { height: 40px; padding: 0 14px; border-radius: 999px; border: 1px solid var(--line); background: var(--chip); color: var(--soft); display: inline-flex; align-items: center; gap: 7px; font: inherit; font-size: 13px; font-weight: 500; cursor: pointer; }
+.safe-toggle.on { color: var(--text); }
+.safe-toggle:disabled { cursor: default; }
 .account { width: 40px; height: 40px; border-radius: 50%; background: var(--inv); color: var(--inv-ink); display: inline-flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 600; }
 
 /* Two layers at most: .glass for panels (blurred), .card inside them (no blur). */
@@ -351,3 +354,17 @@ textarea::placeholder { color: var(--muted); }
   .app, .app:hover { transition: none; transform: none; }
   .bars span.live { animation: none; }
 }
+
+/* Invite page: no top bar, since nothing behind it opens without a code. */
+body:has(.invite) .topbar { display: none; }
+.invite { position: fixed; inset: 0; z-index: 50; display: flex; align-items: center; justify-content: center; padding: 16px; }
+.invite-card { width: min(440px, 100%); padding: 36px 32px; border-radius: 28px; display: flex; flex-direction: column; gap: 14px; }
+.invite-card .brand { font-weight: 700; font-size: 15px; }
+.invite-card h1 { font-size: 34px; line-height: 1.1; letter-spacing: -.02em; margin: 6px 0 0; }
+.invite-card p { color: var(--soft); margin: 0; }
+.invite-card .fine { font-size: 12px; }
+.invite-card .fine a { color: var(--accent-text); }
+.invite-form { display: flex; flex-direction: column; gap: 10px; margin-top: 8px; }
+.invite-form input { min-height: 52px; padding: 0 16px; border-radius: 16px; border: 1px solid var(--line); background: var(--chip); font-size: 16px; letter-spacing: .04em; }
+.invite-error { color: var(--accent-text); font-size: 13px; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); border: 0; }

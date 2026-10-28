@@ -22,6 +22,12 @@ Susano's Openjutsu is not Comfy Org's [comfy-openjutsu](https://github.com/Comfy
 
 Check each model's licence before commercial use. FLUX.2 [dev] in particular is released under a non-commercial licence.
 
+## Safe mode
+
+On by default, with a switch in the top bar. Before anything is generated, Qwen3.5-9B on Comfy Cloud looks at what the user sent: their photos, four frames of each video (in one grid) and their text. It answers SAFE or UNSAFE with a reason. It turns down nudity and sexual content (drawings and anime included), anything suggestive involving someone who looks under 18, graphic gore and hate symbols. Obvious words are blocked before any GPU work. If the check itself can't run, nothing is generated. The Tsukuyomi director is also told to keep every shot safe for work.
+
+A check takes about 20–40 s on Comfy Cloud. Characters cast from Influencer were checked when they were made. Generated outputs are not checked again.
+
 ## How it works
 
 ```
@@ -65,6 +71,19 @@ comfy deploy ls deploy/tsukuyomi   # copy endpointUrl into SUSANO_TSUKUYOMI_URL
 ```
 
 A deployment bills while it is up. With `--min 0` it scales to zero between jobs; `comfy deploy stop deploy/tsukuyomi` stops it completely. The app waits for a waking deployment for up to 20 minutes.
+
+### Run it online
+
+For a shared instance (like susano.studio), set these as well:
+
+| Variable | Does |
+|---|---|
+| `SUSANO_INVITE_CODES` | Comma-separated codes. Every page and API then sits behind an invite page. |
+| `SUSANO_SAFE_MODE=locked` | Safe mode always on; the switch only shows its state. |
+| `SUSANO_DAILY_LIMIT` | Generations allowed per day for the whole instance. |
+| `SUSANO_MAX_DREAM_PARTS` | Longest Tsukuyomi dream, in 5 s parts. |
+
+Susano keeps jobs and media on disk in `var/` and runs ffmpeg, so it needs an always-on Node server with a persistent disk, not serverless. On Railway: create a project from this repo, add a volume mounted at `/app/var`, set the variables above plus `COMFY_CLOUD_API_KEY` and `SUSANO_TSUKUYOMI_URL`, and add your domain. Railway builds with `npm run build` and starts with `npm start`. Everyone with a code shares one history.
 
 ## Costs (measured)
 

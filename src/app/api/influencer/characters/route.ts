@@ -6,6 +6,7 @@ import { characters, startFlux } from "@/lib/character";
 import { uploadInput } from "@/lib/comfy";
 import { MAX_REFS, SHEET_SIZE, cleanTraits, sheetPrompt } from "@/lib/influencer";
 import { normaliseImage } from "@/lib/media";
+import { screen, Unsafe } from "@/lib/safety";
 import { mediaDir } from "@/lib/store";
 
 export const runtime = "nodejs";
@@ -51,6 +52,7 @@ export async function POST(req: Request) {
       await fs.rm(raw);
       refNames.push(await uploadInput(await fs.readFile(png), `${id}_ref${i}.png`, "image/png"));
     }
+    await screen({ text: [name, extra], pictures: refs.map((_, i) => path.join(dir, `ref${i}.png`)) });
     const prompt = sheetPrompt(traits, extra, refNames.length > 0);
     const seed = Math.floor(Math.random() * 2 ** 31);
     await characters.add({
@@ -60,6 +62,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ id });
   } catch (e) {
     await fs.rm(dir, { recursive: true, force: true });
+    if (e instanceof Unsafe) return bad(e.message, 422);
     return bad(`Could not start: ${e instanceof Error ? e.message : String(e)}`, 502);
   }
 }

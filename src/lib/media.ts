@@ -106,3 +106,27 @@ export async function normaliseImage(input: string, output: string): Promise<voi
     "-frames:v", "1", output,
   ]);
 }
+
+/** One frame at `at` seconds, as PNG. */
+export async function frameAt(input: string, output: string, at: number): Promise<void> {
+  await run(ffmpegPath as unknown as string, [
+    "-v", "error", "-y", "-ss", Math.max(0, at).toFixed(3), "-i", input, "-frames:v", "1", output,
+  ]);
+}
+
+/** Up to nine pictures in a grid of 384 px squares, as PNG: everything Safe mode checks, in one picture. */
+export async function contactSheet(images: string[], output: string): Promise<void> {
+  const files = images.slice(0, 9);
+  if (!files.length) throw new Error("Nothing to check.");
+  const tile = 384;
+  const scaled = files.map((_, i) =>
+    `[${i}:v]scale=${tile}:${tile}:force_original_aspect_ratio=decrease,pad=${tile}:${tile}:(ow-iw)/2:(oh-ih)/2,setsar=1,format=rgb24[s${i}]`);
+  const layout = files.map((_, i) => `${(i % 3) * tile}_${Math.floor(i / 3) * tile}`).join("|");
+  const grid = files.length === 1
+    ? "[s0]null[out]"
+    : `${files.map((_, i) => `[s${i}]`).join("")}xstack=inputs=${files.length}:layout=${layout}:fill=black[out]`;
+  await run(ffmpegPath as unknown as string, [
+    "-v", "error", "-y", ...files.flatMap((f) => ["-i", f]),
+    "-filter_complex", [...scaled, grid].join(";"), "-map", "[out]", "-frames:v", "1", output,
+  ]);
+}

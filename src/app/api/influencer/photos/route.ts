@@ -2,6 +2,7 @@ import { randomUUID } from "node:crypto";
 import { NextResponse } from "next/server";
 import { characters, photos, startFlux } from "@/lib/character";
 import { ASPECTS, photoPrompt } from "@/lib/influencer";
+import { screen, Unsafe } from "@/lib/safety";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
@@ -27,6 +28,7 @@ export async function POST(req: Request) {
   const prompt = photoPrompt(scene);
   const seed = Math.floor(Math.random() * 2 ** 31);
   try {
+    await screen({ text: [scene] });
     const id = randomUUID();
     await photos.add({
       id, createdAt: Date.now(), status: "queued", characterId: character.id, scene, aspect: aspect.key, prompt, seed,
@@ -34,6 +36,7 @@ export async function POST(req: Request) {
     });
     return NextResponse.json({ id });
   } catch (e) {
+    if (e instanceof Unsafe) return NextResponse.json({ error: e.message }, { status: 422 });
     return NextResponse.json({ error: `Could not start: ${e instanceof Error ? e.message : String(e)}` }, { status: 502 });
   }
 }

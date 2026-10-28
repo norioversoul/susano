@@ -1,0 +1,51 @@
+import { NextResponse } from "next/server";
+import { DeploymentMissing, deployError } from "@/lib/deploy";
+import { submitWorkflow, type ReshootSettings } from "@/lib/reshoot";
+
+export const runtime = "nodejs";
+
+const MAX_VIDEO_BYTES = 100 * 1024 * 1024;
+
+function settings(form: FormData): { step: "analyze" | "generate"; settings: ReshootSettings } {
+  const step = form.get("step");
+  const aspect = form.get("aspect");
+  const megapixels = Number(form.get("megapixels"));
+  const azimuth = Number(form.get("azimuth") ?? 0);
+  const elevation = Number(form.get("elevation") ?? 0);
+  const distance = Number(form.get("distance") ?? 1);
+  const prompt = form.get("prompt");
+  if (step !== "analyze" && step !== "generate") throw new Error("Choose analyze or generate.");
+  if (!["16:9", "9:16", "1:1", "4:3"].includes(String(aspect))) throw new Error("Choose a supported aspect ratio.");
+  if (![0.4, 1].includes(megapixels)) throw new Error("Choose 480p or 768p.");
+  if (![azimuth, elevation, distance].every(Number.isFinite)) throw new Error("Camera values must be numbers.");
+  if (Math.abs(azimuth) > 90 || elevation < -45 || elevation > 45 || distance < 0.5 || distance > 2) {
+    throw new Error("Keep the camera within the supported preview range.");
+  }
+  return {
+    step,
+    settings: { aspect: String(aspect), megapixels, azimuth, elevation, distance, prompt: typeof prompt === "string" ? prompt.slice(0, 500) : "" },
+  };
+}
+
+export async function POST(request: Request) {
+  let video: File;
+  let step: "analyze" | "generate";
+  let input: ReshootSettings;
+  try {
+    const form = await request.formData();
+    const upload = form.get("video");
+    if (!(upload instanceof File) || upload.size === 0) throw new Error("Choose a video clip.");
+    if (upload.type !== "video/mp4") throw new Error("Choose an MP4 video.");
+    if (upload.size > MAX_VIDEO_BYTES) throw new Error("Keep clips under 100 MB.");
+    video = upload;
+    ({ step, settings: input } = settings(form));
+  } catch (error) {
+    return NextResponse.json({ error: error instanceof Error ? error.message : "Choose an MP4 video." }, { status: 400 });
+  }
+
+  try {
+    return NextResponse.json(await submitWorkflow(video, step, input), { status: 202 });
+  } catch (error) {
+    return NextResponse.json({ error: deployError(error) }, { status: error instanceof DeploymentMissing ? 503 : 502 });
+  }
+}

@@ -83,7 +83,7 @@ A cold deployment adds a few minutes of wake-up time, which is billed.
 ## Credits
 
 - [Character Swap and Style Transfer LoRAs](https://huggingface.co/Alissonerdx/Minimax-H3-ComfyUI) by Alissonerdx
-- [SEEDHUNTER](https://civitai.com/user/foxydits) by foxydits, run unchanged apart from RefMods
+- [SEEDHUNTER v2.5.1](https://civitai.com/models/2881362) by foxydits, included in `workflows/seedhunter/` and run unchanged apart from RefMods (see `THIRD_PARTY_NOTICES/SEEDHUNTER-NOTICE.md`)
 - [ComfyUI-MiniMaxH3Mod](https://github.com/Luisacaotica/ComfyUI-MiniMaxH3Mod) (RefMods) by Luisacaotica
 - [Cinematic Studio](https://github.com/Comfy-Org/comfy-cinematic-studio) by Comfy Org (MIT)
 - The custom node packs listed in `deploy/tsukuyomi/comfy-build.yaml`, and the notices in `THIRD_PARTY_NOTICES/`

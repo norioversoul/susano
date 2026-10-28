@@ -42,3 +42,4 @@ next-env.d.ts
 var/
 .env.local
 .gstack/
+!.env.example

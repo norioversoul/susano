@@ -1,0 +1,60 @@
+schema: comfy-build/1
+name: susano-seedhunter
+description: Tsukuyomi and Influencer video renderer. foxydits' MiniMax H3 SEEDHUNTER v2.51 with its custom node packs pinned, plus ComfyUI-MiniMaxH3Mod for RefMods.
+definition:
+  schema: distribution-definition/0
+  baseComfyVersion: 1568e6cfd04586a4b3c4e1817ea7dde09b1bf9e7
+  models:
+    - sha256: 412a7b126595a958964193f3b42513d7cf2df4196ef04223a0f05e3622949cce
+      sourceUri: https://huggingface.co/WarmBloodAban/Minimax-h3_Singularity/resolve/main/Minimax-h3_Singularity_ref2va_Pruned_v1.3_int8.safetensors
+      type: diffusion_models
+    - sha256: ddfdd94f4c9a0f32bf3649bb8e98ca20db572e4db6bcd9cca546a5b33ea32d11
+      sourceUri: https://huggingface.co/Kijai/MiniMax-H3-experimental/resolve/main/loras/minimax_h3_DMAD_4step_full_lora_avg_rank_39_bf16.safetensors
+      type: loras/MINIMAX
+    - sha256: 35a88d51044231fe332301d7a62aa81e3f2cba62febeb446e2c1e3e0ef76f2c6
+      sourceUri: https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/text_encoders/qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors
+      type: text_encoders
+    - sha256: 8e505d95dd1561d47abd43d4238fd40d9bb1ae9e147ed0a4cba778d76ae4db48
+      sourceUri: https://huggingface.co/Comfy-Org/MiniMax-H3/resolve/main/vae/minimax_h3_audio_vae_fp32.safetensors
+      type: vae
+    - sha256: 9bb2d96f218c76babd85e0611b85ca8fb330a90546c01a0005e8a58a59593410
+      sourceUri: https://huggingface.co/Kijai/MiniMax-H3-experimental/resolve/main/minimax_h3_video_vae_int8_convrot.safetensors
+      type: vae
+  customNodes:
+    - commit: 4de1ab3b66e48da916b6f263bacd001df53a2720
+      name: ComfyUI-Easy-Use
+      repository: https://github.com/yolain/ComfyUI-Easy-Use
+    - commit: 6ba597137a7249e15b8edbf2fc061ab7d0808035
+      name: ComfyUI-Fantastic-MiniMaxH3-PromptBuilder
+      repository: https://github.com/Adudeguyman/ComfyUI-Fantastic-MiniMaxH3-PromptBuilder
+    - commit: 36f8a720e0b0775ecdb7bae41fceae3b513ff2cd
+      name: ComfyUI-H3-Prompt-IDE
+      repository: https://github.com/ethanfel/ComfyUI-H3-Prompt-IDE
+    - commit: d3cfe21625e5170126ce06fbfcfe1d88108688c3
+      name: ComfyUI-KJNodes
+      repository: https://github.com/kijai/ComfyUI-KJNodes
+    - commit: 6131c1f62c612a074d6aac8435c26ffa19c00563
+      name: ComfyUI-MiniMaxH3Mod
+      repository: https://github.com/Luisacaotica/ComfyUI-MiniMaxH3Mod
+    - commit: 9259bc49557a92e3fc14796999468c723bd1ecdd
+      name: ComfyUI-Pixaroma
+      repository: https://github.com/pixaroma/ComfyUI-Pixaroma
+    - commit: 6176a430f12cd16003f4664c1e3c6af8e96cc3c6
+      name: ComfyUI-VFI
+      repository: https://github.com/GACLove/ComfyUI-VFI
+    - commit: 4d907bee61e92c2e65af3bd6383a4e4d356126d1
+      name: ComfyUI-VideoHelperSuite
+      repository: https://github.com/Kosinkadink/ComfyUI-VideoHelperSuite
+    - commit: 40316cf008b2fd8663263270669eb4da23f89d2c
+      name: Comfyui_Minimax_h3_latent_Upscaler
+      repository: https://github.com/LBH-123-AI/Comfyui_Minimax_h3_latent_Upscaler
+    - commit: 721492b66c9cede8ae23ae10615462ad80cfd061
+      name: ControlAltAI-Nodes
+      repository: https://github.com/gseth/ControlAltAI-Nodes
+    - commit: 50ae9f8c5d8b9538589663c90a15d4067a02969c
+      name: cg-use-everywhere
+      repository: https://github.com/chrisgoringe/cg-use-everywhere
+    - commit: 13b4399c00b5ef5a97b1b6800fc1185874740f5d
+      name: rgthree-comfy
+      repository: https://github.com/rgthree/rgthree-comfy
+  pipDependencies: |-

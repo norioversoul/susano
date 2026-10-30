@@ -10,9 +10,13 @@ export async function middleware(req: NextRequest) {
   if (OPEN.some((p) => pathname === p || pathname.startsWith(p))) return NextResponse.next();
   if (await validToken(req.cookies.get(INVITE_COOKIE)?.value)) return NextResponse.next();
   if (pathname.startsWith("/api/")) return NextResponse.json({ error: "Enter your invite code first." }, { status: 401 });
-  // A relative Location: behind a reverse proxy, req.nextUrl carries the server's own address (localhost:3300).
-  const to = pathname === "/" ? "/invite" : `/invite?next=${encodeURIComponent(pathname + search)}`;
-  return new NextResponse(null, { status: 307, headers: { Location: to } });
+  // Behind a reverse proxy req.nextUrl carries the server's own address (localhost:3300),
+  // so the redirect is built from the Host the visitor asked for.
+  const host = req.headers.get("host");
+  const proto = req.headers.get("x-forwarded-proto") ?? req.nextUrl.protocol.replace(":", "");
+  const url = new URL("/invite", host ? `${proto}://${host}` : req.nextUrl.origin);
+  if (pathname !== "/") url.searchParams.set("next", pathname + search);
+  return NextResponse.redirect(url);
 }
 
 export const config = { matcher: "/((?!_next/static|_next/image).*)" };
